@@ -156,9 +156,16 @@ Threshold-sensitivity diagnostic (secondary, exploratory by design):
   a data-driven rule (e.g. minimizing AMSE, double bootstrap). Those
   adaptive methods are out of scope; the diagnostic exists precisely because
   a fixed rule is known to be imperfect.
-- GPD MLE can fail to converge, especially at small `n` combined with a
-  heavy tail. Failures are counted and reported, not silently dropped from
-  the denominator.
+- GPD MLE can fail to recover a heavy tail, especially at small `n` combined
+  with a heavy tail — either because the optimizer itself raises an
+  exception or returns a non-finite parameter (a literal optimizer failure),
+  or because it converges to a non-positive shape (`xi_hat <= 0`), which is
+  a defined heavy-tail-recovery failure, not an optimizer error. This
+  operational failure rate is measured and reported across every
+  replication. The bias, RMSE, quantile-error, and coverage metrics,
+  however, are conditional on the replications where a finite estimate was
+  produced, and each reported cell discloses `n_used` and `n_dropped` so the
+  scoring denominator is never implicit.
 - Reported CI coverage relies on asymptotic theory that is not guaranteed to
   hold at the smaller sample sizes in the grid; where coverage is poor, that
   is reported as a result about the estimator, not treated as an

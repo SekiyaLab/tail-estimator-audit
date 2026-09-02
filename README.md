@@ -73,15 +73,21 @@ above.
 - **Hill**: 0/16,000 failures (0.00%). The estimator is closed-form and
   never fails to produce a number, though — see below — that number is not
   always trustworthy.
-- **GPD-POT MLE**: 1,158/16,000 non-convergences (7.24%) — a fit is scored
-  as non-converged if `scipy.stats.genpareto.fit` fails outright, returns a
-  non-finite parameter, or returns a non-positive shape (`xi_hat <= 0`, i.e.
-  it did not recover a heavy tail at all). This is *not* uniform: it is
-  0.20% under Pareto at `n=10000` and rises to 49.75% (essentially a coin
-  flip) for Student-t, `nu=6`, `n=500` — the combination of a lighter tail
-  and a small sample most strains the "exactly GPD above `u`" assumption.
-  Failures are counted in the denominator throughout, never silently
-  dropped.
+- **GPD-POT MLE**: 1,158/16,000 heavy-tail-recovery failures (7.24%),
+  measured across every replication. A replication is scored as a failure
+  either because `scipy.stats.genpareto.fit` itself raises an exception or
+  returns a non-finite parameter — a literal optimizer failure — or because
+  it converges to a non-positive shape (`xi_hat <= 0`), which is a
+  well-defined outcome of a successful fit meaning no heavy (regularly
+  varying) tail was recovered, not an optimizer error. This is *not*
+  uniform: it is 0.20% under Pareto at `n=10000` and rises to 49.75%
+  (essentially a coin flip) for Student-t, `nu=6`, `n=500` — the combination
+  of a lighter tail and a small sample most strains the "exactly GPD above
+  `u`" assumption. This failure rate is reported over all replications; the
+  bias, RMSE, quantile-error, and coverage numbers reported below for
+  GPD-POT are conditional on the replications that produced a finite
+  estimate, and the underlying results record each cell's `n_used` and
+  `n_dropped` so the scoring denominator is never implicit.
 
 ### H1 (sample-size consistency) — mostly confirmed, with one exception
 
@@ -233,11 +239,13 @@ concrete:
   Figure 4 shows GPD-POT's mean `alpha_hat` under Student-t swinging by more
   than 6x (from ~32 to ~5) across the swept threshold range at a single
   fixed `(n, tail index)` cell.
-- **GPD MLE convergence is not reliable at small n + heavy tail**: up to
-  49.75% non-convergence in the worst observed cell (Student-t, `nu=6`,
-  `n=500`). Any application of GPD-POT to a similarly small, similarly
-  light-tailed-for-a-tail-model sample should expect a meaningful chance of
-  outright fit failure, separate from the bias/RMSE question.
+- **GPD MLE heavy-tail recovery is not reliable at small n + heavy tail**:
+  up to 49.75% failure (counted across all replications in that cell) in
+  the worst observed cell (Student-t, `nu=6`, `n=500`). Any application of
+  GPD-POT to a similarly small, similarly light-tailed-for-a-tail-model
+  sample should expect a meaningful chance of failing to recover a heavy
+  tail at all — separate from, and prior to, the bias/RMSE question, which
+  is scored only over the replications that produced a finite estimate.
 - **Hill's classical Wald CI is not trustworthy across the board** — it
   degrades to 11-20% coverage (against a nominal 95%) under Student-t at
   tail index 6, and this does not improve with `n`. A practitioner reading
