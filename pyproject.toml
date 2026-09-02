@@ -1,0 +1,30 @@
+[project]
+name = "tail-estimator-audit"
+version = "0.1.0"
+description = "Controlled-DGP audit of Hill and GPD-POT tail-index recovery"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy==2.5.2",
+  "scipy==1.18.1",
+  "pandas==3.0.5",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest==9.1.1",
+]
+figures = [
+  "matplotlib==3.11.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test and coverage caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Generated experiment output (regenerate via scripts/run_*.py; large CSVs,
+# not meant to be diffed). Figures ARE committed, since the README renders
+# them directly.
+results/
