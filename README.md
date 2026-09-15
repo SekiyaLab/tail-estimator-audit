@@ -10,6 +10,12 @@ for the full contract, including what this study explicitly does not claim.
 This is a synthetic-data study only. No real financial, market, or other
 observed data is used anywhere.
 
+**Publication authorized 2026-09-15** (see
+`docs/decisions/ADR-001-publication-authorization.md`). This repository is
+public. Full review history, including the initial REVISE and the
+independent ACCEPT that resolved it, is preserved in
+[`docs/reviews/`](docs/reviews/).
+
 ## Reproduction
 
 ```
